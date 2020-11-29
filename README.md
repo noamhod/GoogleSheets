@@ -1,5 +1,7 @@
-Background:
+Turn on the Google Sheets API:
 - https://developers.google.com/sheets/api/quickstart/python
+
+Some bacground:
 - https://developers.google.com/sheets/api/guides/concepts
 
 Initial install:
@@ -8,4 +10,4 @@ Initial install:
 
 Run it:
 - pythnon getsheets.py
-
+- pythnon luxebkg.py
