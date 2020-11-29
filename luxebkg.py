@@ -154,7 +154,8 @@ def minmax(h1,h2,logy,forceh1min=False,fup=10,fdown=5):
 def LUXE(x,y,col=ROOT.kBlack,boldit=False):
    s = TLatex()
    s.SetNDC(1)
-   s.SetTextAlign(52)
+   s.SetTextAlign(42)
+   s.SetTextFont(52)
    s.SetTextColor(col)
    s.SetTextSize(0.044)
    s.DrawLatex(x,y,"LUXE #it{CDR}")
@@ -163,6 +164,7 @@ def label(text,x,y,col=ROOT.kBlack,boldit=False):
    s = TLatex()
    s.SetNDC(1)
    s.SetTextAlign(42)
+   s.SetTextFont(42)
    s.SetTextColor(col)
    s.SetTextSize(0.044)
    s.DrawLatex(x,y,text)
@@ -171,8 +173,8 @@ def label(text,x,y,col=ROOT.kBlack,boldit=False):
 def draw(var,basename,sheetname,allpdf):
    cnv = TCanvas("cnv","",800,500)
    cnv.cd()
-   cnv.SetTicks(1,1)
-   cnv.SetGrid(1,1)
+   cnv.SetTicks(0,1)
+   cnv.SetGrid(0,1)
    cnv.SetLogy()
    hmin,hmax = minmax(histos[basename+"_gam"+var],histos[basename+"_ele"+var],True)
    hmin,hmax = minmax(histos[basename+"_gam"+var],histos[basename+"_pos"+var],True,True)
