@@ -215,10 +215,10 @@ def draw(var,basename,sheetname,allpdf):
    leg.AddEntry(histos[basename+"_ele"+var],"Electrons","f")
    leg.AddEntry(histos[basename+"_pos"+var],"Positrons","f")
    leg.Draw("same")
-   LUXE(0.20,0.85,ROOT.kBlack)
+   LUXE(0.22,0.85,ROOT.kBlack)
    htitle = htitle.split(", ")
-   label(htitle[0],0.20,0.80,ROOT.kBlack)
-   label(htitle[1],0.20,0.75,ROOT.kBlack)
+   label(htitle[0],0.22,0.80,ROOT.kBlack)
+   label(htitle[1],0.22,0.75,ROOT.kBlack)
    cnv.RedrawAxis()
    cnv.Update()
    cnv.SaveAs("plots/"+basename+var+".pdf")
@@ -249,6 +249,7 @@ def main():
    cnv = TCanvas("cnv","",800,500)
    cnv.SaveAs(allpdf+"(")
    
+   binmargins = 3
    for sheetname,ranges in DICT_SAMPLE_RANGE_NAME.items():
       # pp.pprint(data[sheetname])
       detectors = data[sheetname]["Detectors"]
@@ -260,10 +261,12 @@ def main():
       for iparticle in range(len(nparticles[0])):
          particle = nparticles[0][iparticle]
          hname = basename+"_"+particle
-         histos.update( {hname+"4_nperbx"   :TH1D(hname+"4_nperbx","",4*n-1,0,4*n-1)} )
-         histos.update( {hname+"4_esumperbx":TH1D(hname+"4_esumperbx","",4*n-1,0,4*n-1)} )
-         histos.update( {hname+"3_nperbx"   :TH1D(hname+"3_nperbx","",3*n,0,3*n)} )
-         histos.update( {hname+"3_esumperbx":TH1D(hname+"3_esumperbx","",3*n,0,3*n)} )
+         n4 = 4*n-1+2*binmargins
+         n3 = 3*n
+         histos.update( {hname+"4_nperbx"   :TH1D(hname+"4_nperbx","",n4,0,n4)} )
+         histos.update( {hname+"4_esumperbx":TH1D(hname+"4_esumperbx","",n4,0,n4)} )
+         histos.update( {hname+"3_nperbx"   :TH1D(hname+"3_nperbx","",n3,0,n3)} )
+         histos.update( {hname+"3_esumperbx":TH1D(hname+"3_esumperbx","",n3,0,n3)} )
          histos.update( {hname+"_nperbx"    :TH1D(hname+"_nperbx","",n,0,n)} )
          histos.update( {hname+"_esumperbx" :TH1D(hname+"_esumperbx","",n,0,n)} )
          for idet in range(1,len(detectors)):
@@ -273,9 +276,9 @@ def main():
                label = label.replace("xi","#xi")
                xbin3 = 3*idet-1
                xbin4 = -1
-               if(idet==1):   xbin4 = 3*idet-1
-               elif(idet==2): xbin4 = 3*idet
-               else:          xbin4 = 4*idet-2
+               if(idet==1):   xbin4 = 3*idet-1+binmargins
+               elif(idet==2): xbin4 = 3*idet+binmargins
+               else:          xbin4 = 4*idet-2+binmargins
                # print("iparticle="+str(iparticle)+" idet="+str(idet)+" xbin3="+str(xbin3)+" xbin4="+str(xbin4)+" label="+label)
                histos[hname+"_nperbx"].GetXaxis().SetBinLabel(idet,label)
                histos[hname+"_esumperbx"].GetXaxis().SetBinLabel(idet,label)
@@ -287,9 +290,9 @@ def main():
             ### fill
             xbin3 = 3*idet-2+iparticle
             xbin4 = -1
-            if(idet==1):   xbin4 = 3*idet-2+iparticle
-            elif(idet==2): xbin4 = 3*idet-1+iparticle
-            else:          xbin4 = 4*idet-3+iparticle
+            if(idet==1):   xbin4 = 3*idet-2+iparticle+binmargins
+            elif(idet==2): xbin4 = 3*idet-1+iparticle+binmargins
+            else:          xbin4 = 4*idet-3+iparticle+binmargins
             if(len(nparticles[idet])==len(nparticles[0])):
                nperbx = float(nparticles[idet][iparticle])
                histos[hname+"_nperbx"].SetBinContent(idet,nperbx)
