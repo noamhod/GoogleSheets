@@ -24,7 +24,12 @@ ROOT.gStyle.SetOptStat(0);
 ROOT.gStyle.SetPadBottomMargin(0.15)
 ROOT.gStyle.SetPadLeftMargin(0.13)
 
+### for pretty prints..
 pp = pprint.PrettyPrinter(indent=4)
+
+### output dir for plots
+p = subprocess.Popen("mkdir -p plots", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+out, err = p.communicate()
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
