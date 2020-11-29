@@ -179,12 +179,12 @@ def draw(var,basename,sheetname,allpdf):
    hmin,hmax = minmax(histos[basename+"_gam"+var],histos[basename+"_ele"+var],True)
    hmin,hmax = minmax(histos[basename+"_gam"+var],histos[basename+"_pos"+var],True,True)
    hmin,hmax = minmax(histos[basename+"_ele"+var],histos[basename+"_pos"+var],True,True)
-   histos[basename+"_gam"+var].SetLineColor(ROOT.kBlack)
-   histos[basename+"_ele"+var].SetLineColor(ROOT.kRed)
+   histos[basename+"_gam"+var].SetLineColor(ROOT.kRed)
+   histos[basename+"_ele"+var].SetLineColor(ROOT.kBlack)
    histos[basename+"_pos"+var].SetLineColor(ROOT.kBlue)
    
-   histos[basename+"_gam"+var].SetFillColorAlpha(ROOT.kBlack,0.5)
-   histos[basename+"_ele"+var].SetFillColorAlpha(ROOT.kRed,0.5)
+   histos[basename+"_gam"+var].SetFillColorAlpha(ROOT.kRed,0.5)
+   histos[basename+"_ele"+var].SetFillColorAlpha(ROOT.kBlack,0.5)
    histos[basename+"_pos"+var].SetFillColorAlpha(ROOT.kBlue,0.5)
    
    # histos[basename+"_gam"+var].SetMarkerColor(ROOT.kBlack)
