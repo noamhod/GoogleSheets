@@ -50,10 +50,10 @@ SAMPLE_RANGE_NAME = 'DETIDs!A1:G'
 # }
 
 DICT_SAMPLE_RANGE_NAME = {
-   'g+laser bkg, beamonly' :{'Detectors':'B2:B1000', 'Nparticles':'C2:E', 'Esum':'I2:K'},
-   'e+laser bkg, beamonly' :{'Detectors':'B2:B1000', 'Nparticles':'C2:E', 'Esum':'I2:K'},
-   'e+laser bkg, JETI40'   :{'Detectors':'B2:B1000', 'Nparticles':'C2:E', 'Esum':'I2:K'},
-   'e+laser bkg, PhaseII'  :{'Detectors':'B2:B1000', 'Nparticles':'C2:E', 'Esum':'I2:K'},
+   'g+laser bkg, beamonly' :{'Detectors':'C2:C1000', 'Area':'B2:B1000', 'Nparticles':'D2:F', 'Esum':'J2:L'},
+   'e+laser bkg, beamonly' :{'Detectors':'C2:C1000', 'Area':'B2:B1000', 'Nparticles':'D2:F', 'Esum':'J2:L'},
+   'e+laser bkg, JETI40'   :{'Detectors':'C2:C1000', 'Area':'B2:B1000', 'Nparticles':'D2:F', 'Esum':'J2:L'},
+   'e+laser bkg, PhaseII'  :{'Detectors':'C2:C1000', 'Area':'B2:B1000', 'Nparticles':'D2:F', 'Esum':'J2:L'},
 }
 
 DICT_SAMPLE_TITLE = {
@@ -199,7 +199,8 @@ def draw(var,basename,sheetname,allpdf):
    # histos[basename+"_ele"+var].SetMarkerStyle(22)
    # histos[basename+"_pos"+var].SetMarkerStyle(23)
    htitle = DICT_SAMPLE_TITLE[sheetname]
-   ytitle = "Particles/BX" if("nperbx" in var) else "#SigmaE/BX [GeV]"
+   ytitle = "Particles / BX" if("nperbx" in var) else "#SigmaE / BX [GeV]"
+   if("permm2" in var): ytitle = "Particles / BX / Active area [1/mm^{2}]" if("nperbxpermm2" in var) else "#SigmaE / BX / Active area [GeV/mm^{2}]"
    # histos[basename+"_gam"+var].SetTitle(htitle)
    histos[basename+"_gam"+var].GetYaxis().SetTitle(ytitle)
    # histos[basename+"_gam"+var].Draw("p")
@@ -220,10 +221,10 @@ def draw(var,basename,sheetname,allpdf):
    leg.AddEntry(histos[basename+"_ele"+var],"Electrons","f")
    leg.AddEntry(histos[basename+"_pos"+var],"Positrons","f")
    leg.Draw("same")
-   LUXE(0.22,0.85,ROOT.kBlack)
+   LUXE(0.25,0.85,ROOT.kBlack)
    htitle = htitle.split(", ")
-   label(htitle[0],0.22,0.80,ROOT.kBlack)
-   label(htitle[1],0.22,0.75,ROOT.kBlack)
+   label(htitle[0],0.25,0.80,ROOT.kBlack)
+   label(htitle[1],0.25,0.75,ROOT.kBlack)
    cnv.RedrawAxis()
    cnv.Update()
    cnv.SaveAs("plots/"+basename+var+".pdf")
@@ -258,6 +259,7 @@ def main():
    for sheetname,ranges in DICT_SAMPLE_RANGE_NAME.items():
       # pp.pprint(data[sheetname])
       detectors = data[sheetname]["Detectors"]
+      areas = data[sheetname]["Area"]
       nparticles = data[sheetname]["Nparticles"]
       Esum = data[sheetname]["Esum"]
       n = len(data[sheetname]["Detectors"])-1
@@ -268,6 +270,8 @@ def main():
          hname = basename+"_"+particle
          n4 = 4*n-1+2*binmargins
          n3 = 3*n
+         histos.update( {hname+"4_nperbxpermm2"   :TH1D(hname+"4_nperbxpermm2","",n4,0,n4)} )
+         histos.update( {hname+"4_esumperbxpermm2":TH1D(hname+"4_esumperbxpermm2","",n4,0,n4)} )
          histos.update( {hname+"4_nperbx"   :TH1D(hname+"4_nperbx","",n4,0,n4)} )
          histos.update( {hname+"4_esumperbx":TH1D(hname+"4_esumperbx","",n4,0,n4)} )
          histos.update( {hname+"3_nperbx"   :TH1D(hname+"3_nperbx","",n3,0,n3)} )
@@ -277,7 +281,7 @@ def main():
          for idet in range(1,len(detectors)):
             ### set labels only once
             if(iparticle==0):
-               label = detectors[idet][0] if(iparticle==0) else ""
+               label = detectors[idet][0] #if(iparticle==0) else ""
                label = label.replace("xi","#xi")
                xbin3 = 3*idet-1
                xbin4 = -1
@@ -291,8 +295,11 @@ def main():
                histos[hname+"3_esumperbx"].GetXaxis().SetBinLabel(xbin3,label)
                histos[hname+"4_nperbx"].GetXaxis().SetBinLabel(xbin4,label)
                histos[hname+"4_esumperbx"].GetXaxis().SetBinLabel(xbin4,label)
+               histos[hname+"4_nperbxpermm2"].GetXaxis().SetBinLabel(xbin4,label)
+               histos[hname+"4_esumperbxpermm2"].GetXaxis().SetBinLabel(xbin4,label)
             
             ### fill
+            detarea = float(areas[idet][0])
             xbin3 = 3*idet-2+iparticle
             xbin4 = -1
             if(idet==1):   xbin4 = 3*idet-2+iparticle+binmargins
@@ -300,16 +307,22 @@ def main():
             else:          xbin4 = 4*idet-3+iparticle+binmargins
             if(len(nparticles[idet])==len(nparticles[0])):
                nperbx = float(nparticles[idet][iparticle])
+               nperbxpermm2 = nperbx/detarea
                histos[hname+"_nperbx"].SetBinContent(idet,nperbx)
                histos[hname+"3_nperbx"].SetBinContent(xbin3,nperbx)
                histos[hname+"4_nperbx"].SetBinContent(xbin4,nperbx)
+               histos[hname+"4_nperbxpermm2"].SetBinContent(xbin4,nperbxpermm2)
             if(len(Esum[idet])==len(Esum[0])):
                esumperbx = float(Esum[idet][iparticle])
+               esumperbxpermm2 = esumperbx/detarea
                histos[hname+"_esumperbx"].SetBinContent(idet,esumperbx)
                histos[hname+"3_esumperbx"].SetBinContent(xbin3,esumperbx)
                histos[hname+"4_esumperbx"].SetBinContent(xbin4,esumperbx)
+               histos[hname+"4_esumperbxpermm2"].SetBinContent(xbin4,esumperbxpermm2)
 
-      for var in ["4_nperbx", "4_esumperbx"]: draw(var,basename,sheetname,allpdf)
+      ### draw to pdf
+      for var in ["4_nperbx", "4_nperbxpermm2", "4_esumperbx", "4_esumperbxpermm2"]:
+         draw(var,basename,sheetname,allpdf)
       
 
    ### close the pdf
