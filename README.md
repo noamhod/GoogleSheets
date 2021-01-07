@@ -6,7 +6,7 @@ Some bacground:
 
 Initial install:
 - source setupROOT6.brew.python3.sh ### <-- in my case
-- pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+- sudo pip3 install --force-reinstall --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 - mkdir plots/
 
 

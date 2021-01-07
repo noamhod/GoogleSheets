@@ -134,6 +134,7 @@ def getdata(service,doprint=False,spreadsheetid="",rangename=""):
 
 
 def minmax(h1,h2,logy,forceh1min=False,fup=10,fdown=5):
+   if("4_esumperbx" in h1.GetName()): fup = 20
    hmax = h1.GetMaximum() if(h1.GetMaximum()>h2.GetMaximum()) else h2.GetMaximum()
    hmin = 1e20
    if(forceh1min): hmin = h1.GetMinimum()
